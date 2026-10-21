@@ -1,0 +1,36 @@
+{
+  "name": "watchbox-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "shared",
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -n \"server,client\" -c \"cyan,magenta\" \"npm run dev --workspace=@watchbox/server\" \"npm run dev --workspace=@watchbox/client\"",
+    "build:shared": "npm run build --workspace=@watchbox/shared",
+    "build:server": "npm run build --workspace=@watchbox/server",
+    "build:client": "npm run build --workspace=@watchbox/client",
+    "build": "npm run build:shared && npm run build:server && npm run build:client",
+    "test:shared": "npm run test --workspace=@watchbox/shared",
+    "test:server": "npm run test --workspace=@watchbox/server",
+    "test:client": "npm run test --workspace=@watchbox/client",
+    "test": "npm run test:shared && npm run test:server && npm run test:client",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "concurrently": "^9.1.2",
+    "eslint": "^10.13.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.10",
+    "typescript-eslint": "^8.72.0"
+  }
+}
