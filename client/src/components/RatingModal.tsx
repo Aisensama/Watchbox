@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Star, X, Trash2 } from "lucide-react";
 import { useSaveRating, useRemoveRating } from "../hooks/usePersonal";
+import { SurfButton } from "./SurfButton";
 
 interface RatingModalProps {
   isOpen: boolean;
@@ -139,13 +140,14 @@ export const RatingModal: React.FC<RatingModalProps> = ({
               >
                 Cancel
               </button>
-              <button
+              <SurfButton
                 type="submit"
                 disabled={saveMutation.isPending}
-                className="px-5 py-2 rounded-xl text-xs font-semibold bg-rose-500 hover:bg-rose-600 text-white shadow-lg shadow-rose-500/25 transition-all"
+                size="sm"
+                hoverText="SAVE SCORE"
               >
                 {saveMutation.isPending ? "Saving..." : "Save Rating"}
-              </button>
+              </SurfButton>
             </div>
           </div>
         </form>

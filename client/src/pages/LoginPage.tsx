@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Film, Mail, Lock, ArrowRight } from "lucide-react";
+import { Film, Mail, Lock } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { NeonButton } from "../components/NeonButton";
 import { LoginInputSchema } from "@watchbox/shared";
 
 export const LoginPage: React.FC = () => {
@@ -93,14 +94,16 @@ export const LoginPage: React.FC = () => {
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow-xl shadow-rose-600/25 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-          >
-            <span>{isSubmitting ? "Signing in..." : "Sign In"}</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
+          <div className="pt-2">
+            <NeonButton
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full"
+              size="lg"
+            >
+              {isSubmitting ? "Signing in..." : "Sign In"}
+            </NeonButton>
+          </div>
         </form>
 
         <p className="text-center text-xs text-slate-400">

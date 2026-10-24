@@ -14,6 +14,7 @@ import { useAuth } from "../context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../api/client";
 import { useGenres } from "../hooks/useMovies";
+import { NeonButton } from "../components/NeonButton";
 import type { SafeUser } from "@watchbox/shared";
 
 interface ProfileResponse {
@@ -216,14 +217,14 @@ export const ProfilePage: React.FC = () => {
               >
                 Cancel
               </button>
-              <button
+              <NeonButton
                 type="submit"
                 disabled={isSaving}
-                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-lg shadow-rose-600/20"
+                size="sm"
+                icon={<Save className="w-3.5 h-3.5" />}
               >
-                <Save className="w-3.5 h-3.5" />
-                <span>{isSaving ? "Saving..." : "Save Changes"}</span>
-              </button>
+                {isSaving ? "Saving..." : "Save Changes"}
+              </NeonButton>
             </div>
           </form>
         )}

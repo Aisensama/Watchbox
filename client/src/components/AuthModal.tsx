@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { X, Film, Mail, Lock, User, ArrowRight } from "lucide-react";
+import { X, Film, Mail, Lock, User } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { SurfButton } from "./SurfButton";
 import { RegisterInputSchema, LoginInputSchema } from "@watchbox/shared";
 
 interface AuthModalProps {
@@ -194,20 +195,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full mt-2 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow-xl shadow-rose-600/25 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-          >
-            <span>
+          <div className="pt-2">
+            <SurfButton
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full"
+              size="lg"
+              hoverText={mode === "login" ? "WELCOME BACK" : "JOIN WATCHBOX"}
+            >
               {isSubmitting
                 ? "Processing..."
                 : mode === "login"
                   ? "Sign In"
                   : "Create Account"}
-            </span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
+            </SurfButton>
+          </div>
         </form>
 
         <p className="mt-5 text-center text-xs text-slate-500">

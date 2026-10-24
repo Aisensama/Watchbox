@@ -7,6 +7,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiClient } from "../api/client";
 import { useSearchMovies } from "../hooks/useMovies";
 import { getPosterUrl } from "../utils/tmdb";
+import { NeonButton } from "../components/NeonButton";
 import type {
   SafeUser,
   CuratedCollection,
@@ -239,16 +240,16 @@ export const AdminPage: React.FC = () => {
                 </p>
               </div>
 
-              <button
+              <NeonButton
                 onClick={() => {
                   resetCollectionForm();
                   setCollectionModalOpen(true);
                 }}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition-all"
+                size="sm"
+                icon={<Plus className="w-4 h-4" />}
               >
-                <Plus className="w-4 h-4" />
-                <span>Create Collection</span>
-              </button>
+                Create Collection
+              </NeonButton>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -567,17 +568,17 @@ export const AdminPage: React.FC = () => {
                 >
                   Cancel
                 </button>
-                <button
+                <NeonButton
                   type="submit"
                   disabled={saveCollectionMutation.isPending}
-                  className="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20"
+                  size="sm"
                 >
                   {saveCollectionMutation.isPending
                     ? "Saving..."
                     : editingCollection
                       ? "Update Collection"
                       : "Create Collection"}
-                </button>
+                </NeonButton>
               </div>
             </form>
           </div>

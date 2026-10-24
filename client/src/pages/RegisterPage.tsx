@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Film, Mail, Lock, User, ArrowRight } from "lucide-react";
+import { Film, Mail, Lock, User } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { NeonButton } from "../components/NeonButton";
 import { RegisterInputSchema } from "@watchbox/shared";
 
 export const RegisterPage: React.FC = () => {
@@ -114,14 +115,16 @@ export const RegisterPage: React.FC = () => {
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow-xl shadow-rose-600/25 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-          >
-            <span>{isSubmitting ? "Creating account..." : "Create Account"}</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
+          <div className="pt-2">
+            <NeonButton
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full"
+              size="lg"
+            >
+              {isSubmitting ? "Creating account..." : "Create Account"}
+            </NeonButton>
+          </div>
         </form>
 
         <p className="text-center text-xs text-slate-400">

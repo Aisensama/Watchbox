@@ -30,6 +30,7 @@ import {
 import { TrailerModal } from "../components/TrailerModal";
 import { RatingModal } from "../components/RatingModal";
 import { WatchBoxDnaCard } from "../components/WatchBoxDnaCard";
+import { SurfButton } from "../components/SurfButton";
 import type { DnaRecommendation } from "@watchbox/shared";
 
 export const MovieDetailPage: React.FC = () => {
@@ -250,49 +251,42 @@ export const MovieDetailPage: React.FC = () => {
             </div>
 
             {/* Action Buttons Row */}
-            <div className="flex items-center gap-3 pt-3 flex-wrap">
-              <button
+            <div className="flex items-center gap-4 pt-3 flex-wrap">
+              <SurfButton
                 onClick={() => setTrailerOpen(true)}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow-xl shadow-rose-600/30 transition-all hover:scale-105 active:scale-95"
+                icon={<Play className="w-4 h-4 fill-current" />}
+                hoverText="PLAY TRAILER"
+                size="md"
               >
-                <Play className="w-4 h-4 fill-white" />
-                <span>Watch Trailer</span>
-              </button>
+                Watch Trailer
+              </SurfButton>
 
-              <button
+              <SurfButton
                 onClick={handleWatchlistToggle}
-                className={`inline-flex items-center gap-2 px-5 py-3 rounded-full border text-sm font-semibold transition-all hover:scale-105 active:scale-95 ${
-                  inWatchlist
-                    ? "bg-rose-950/70 border-rose-500 text-rose-300 hover:bg-rose-900/80"
-                    : "bg-slate-950/80 border-slate-700 text-slate-100 hover:bg-slate-800"
-                }`}
-              >
-                {inWatchlist ? (
-                  <>
-                    <Check className="w-4 h-4 text-rose-400" />
-                    <span>In Watchlist</span>
-                  </>
-                ) : (
-                  <>
+                icon={
+                  inWatchlist ? (
+                    <Check className="w-4 h-4 text-emerald-600" />
+                  ) : (
                     <Plus className="w-4 h-4" />
-                    <span>Add to My List</span>
-                  </>
-                )}
-              </button>
-
-              <button
-                onClick={handleHistoryToggle}
-                className={`inline-flex items-center gap-2 px-4 py-3 rounded-full border text-sm font-semibold transition-all hover:scale-105 active:scale-95 ${
-                  isWatched
-                    ? "bg-emerald-950/70 border-emerald-500 text-emerald-300"
-                    : "bg-slate-950/80 border-slate-700 text-slate-100 hover:bg-slate-800"
-                }`}
+                  )
+                }
+                hoverText={inWatchlist ? "IN WATCHLIST" : "ADD TO LIST"}
+                gradientVariant="orange-red"
+                size="md"
               >
-                <Eye className="w-4 h-4" />
-                <span>{isWatched ? "Watched" : "Mark Watched"}</span>
-              </button>
+                {inWatchlist ? "In Watchlist" : "Add to My List"}
+              </SurfButton>
 
-              <button
+              <SurfButton
+                onClick={handleHistoryToggle}
+                icon={<Eye className="w-4 h-4" />}
+                hoverText={isWatched ? "WATCHED" : "MARK WATCHED"}
+                size="md"
+              >
+                {isWatched ? "Watched" : "Mark Watched"}
+              </SurfButton>
+
+              <SurfButton
                 onClick={() => {
                   if (!user) {
                     showToast("Sign in to rate movies", "info");
@@ -300,19 +294,19 @@ export const MovieDetailPage: React.FC = () => {
                   }
                   setRatingOpen(true);
                 }}
-                className={`inline-flex items-center gap-1.5 px-4 py-3 rounded-full border text-sm font-semibold transition-all hover:scale-105 active:scale-95 ${
-                  userRating
-                    ? "bg-amber-950/70 border-amber-500 text-amber-300"
-                    : "bg-slate-950/80 border-slate-700 text-slate-200 hover:bg-slate-800"
-                }`}
+                icon={
+                  <Star
+                    className={`w-4 h-4 ${
+                      userRating ? "fill-amber-400 text-amber-400" : "text-amber-500"
+                    }`}
+                  />
+                }
+                hoverText={userRating ? `RATED ${userRating.score}/10` : "RATE MOVIE"}
+                size="md"
+                gradientVariant="orange-red"
               >
-                <Star
-                  className={`w-4 h-4 ${
-                    userRating ? "fill-amber-400 text-amber-400" : "text-slate-400"
-                  }`}
-                />
-                <span>{userRating ? `Your Rating: ${userRating.score}/10` : "Rate"}</span>
-              </button>
+                {userRating ? `Rated: ${userRating.score}/10` : "Rate Movie"}
+              </SurfButton>
             </div>
           </div>
         </div>

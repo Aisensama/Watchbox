@@ -10,6 +10,7 @@ import {
 } from "../hooks/usePersonal";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import { SurfButton } from "./SurfButton";
 
 interface HeroBannerProps {
   movies: MovieSummary[];
@@ -112,35 +113,31 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ movies, onPlayTrailer })
           </p>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-3 pt-2 flex-wrap">
-            <button
+          <div className="flex items-center gap-4 pt-2 flex-wrap">
+            <SurfButton
               onClick={handleTrailerClick}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow-xl shadow-rose-600/30 transition-all hover:scale-105 active:scale-95"
+              icon={<Play className="w-4 h-4 fill-current" />}
+              hoverText="PLAY TRAILER"
+              size="lg"
             >
-              <Play className="w-4 h-4 fill-white" />
-              <span>Watch Trailer</span>
-            </button>
+              Watch Trailer
+            </SurfButton>
 
-            <button
+            <SurfButton
               onClick={handleWatchlistToggle}
-              className={`inline-flex items-center gap-2 px-5 py-3 rounded-full border text-sm font-semibold backdrop-blur-md transition-all hover:scale-105 active:scale-95 ${
-                inWatchlist
-                  ? "bg-rose-950/70 border-rose-500 text-rose-300 hover:bg-rose-900/80"
-                  : "bg-slate-900/70 border-slate-700 text-slate-100 hover:bg-slate-800/80"
-              }`}
-            >
-              {inWatchlist ? (
-                <>
-                  <Check className="w-4 h-4 text-rose-400" />
-                  <span>In Watchlist</span>
-                </>
-              ) : (
-                <>
+              icon={
+                inWatchlist ? (
+                  <Check className="w-4 h-4 text-emerald-600" />
+                ) : (
                   <Plus className="w-4 h-4" />
-                  <span>Add to My List</span>
-                </>
-              )}
-            </button>
+                )
+              }
+              hoverText={inWatchlist ? "SAVED TO LIST" : "SAVE TO LIST"}
+              size="lg"
+              gradientVariant="orange-red"
+            >
+              {inWatchlist ? "In Watchlist" : "Add to My List"}
+            </SurfButton>
 
             <Link
               to={`/movies/${currentMovie.id}`}

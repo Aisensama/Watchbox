@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { GlowSearchInput } from "./GlowSearchInput";
+import { SurfButton } from "./SurfButton";
 
 interface NavbarProps {
   onOpenAuthModal?: (mode: "login" | "register") => void;
@@ -211,14 +212,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
               >
                 Sign In
               </button>
-              <button
+              <SurfButton
                 onClick={() =>
                   onOpenAuthModal ? onOpenAuthModal("register") : navigate("/register")
                 }
-                className="px-4 py-1.5 rounded-full text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white shadow-md shadow-rose-600/20 transition-all hover:scale-105"
+                size="sm"
+                hoverText="JOIN NOW"
               >
                 Join Free
-              </button>
+              </SurfButton>
             </div>
           )}
 
