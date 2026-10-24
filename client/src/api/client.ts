@@ -50,5 +50,13 @@ export const apiClient = async <T>(
     throw new ApiError(errorMsg, response.status, data);
   }
 
+  if (!isJson && typeof data === "string" && data.trim().startsWith("<!DOCTYPE")) {
+    throw new ApiError(
+      `API endpoint "${endpoint}" returned HTML instead of JSON. Check that Vercel Root Directory is set to project root and backend environment variables are configured.`,
+      502,
+      data
+    );
+  }
+
   return data as T;
 };
