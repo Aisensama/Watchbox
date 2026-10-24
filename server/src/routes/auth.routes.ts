@@ -53,6 +53,7 @@ authRouter.post(
       // Regenerate session to prevent session fixation
       req.session.regenerate((err) => {
         if (err) {
+          console.error("[Auth Session Regenerate Error]:", err);
           res.status(500).json({ error: "Session creation failed" });
           return;
         }
@@ -62,6 +63,7 @@ authRouter.post(
 
         req.session.save((saveErr) => {
           if (saveErr) {
+            console.error("[Auth Session Save Error]:", saveErr);
             res.status(500).json({ error: "Session save failed" });
             return;
           }
@@ -99,6 +101,7 @@ authRouter.post(
       // Regenerate session to prevent session fixation
       req.session.regenerate((err) => {
         if (err) {
+          console.error("[Auth Session Regenerate Error]:", err);
           res.status(500).json({ error: "Session initialization failed" });
           return;
         }
@@ -108,6 +111,7 @@ authRouter.post(
 
         req.session.save((saveErr) => {
           if (saveErr) {
+            console.error("[Auth Session Save Error]:", saveErr);
             res.status(500).json({ error: "Session save failed" });
             return;
           }

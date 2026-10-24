@@ -26,6 +26,9 @@ const isProduction = process.env.NODE_ENV === "production";
 const sessionSecret =
   process.env.SESSION_SECRET || "watchbox_super_secret_session_key_32chars_long";
 
+// Trust reverse proxy (Vercel, Render, AWS, etc.) for secure cookies over HTTPS
+app.set("trust proxy", 1);
+
 // 1. Security Headers
 app.use(
   helmet({
@@ -35,10 +38,23 @@ app.use(
 );
 
 // 2. CORS configuration
-const allowedOrigin = process.env.CLIENT_ORIGIN || "http://localhost:5173";
+const allowedOrigin = process.env.CLIENT_ORIGIN;
 app.use(
   cors({
-    origin: allowedOrigin,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like same-origin, curl, server-to-server)
+      if (!origin) return callback(null, true);
+      if (
+        !allowedOrigin ||
+        origin === allowedOrigin ||
+        origin.endsWith(".vercel.app") ||
+        origin.includes("localhost") ||
+        origin.includes("127.0.0.1")
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     credentials: true,
   })
 );
@@ -65,9 +81,7 @@ if (mongoUri && !mongoUri.includes("<") && !mongoUri.includes("your_password")) 
     sessionStore = MongoStore.create({
       mongoUrl: mongoUri,
       touchAfter: 24 * 3600, // lazy session update once per 24 hours
-      crypto: {
-        secret: sessionSecret,
-      },
+      collectionName: "sessions",
     });
     sessionStore.on("error", (err) => {
       console.warn(

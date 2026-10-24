@@ -190,7 +190,7 @@ export const MovieDetailPage: React.FC = () => {
         </div>
 
         {/* Top Header Card: Poster + Title + Actions */}
-        <div className="flex flex-col md:flex-row items-start gap-8 bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-2xl">
+        <div className="neon-layout-border flex flex-col md:flex-row items-start gap-8 bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-2xl">
           {/* Poster */}
           <div className="w-40 sm:w-56 shrink-0 aspect-[2/3] rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl">
             <img
@@ -316,7 +316,7 @@ export const MovieDetailPage: React.FC = () => {
           {/* Left Column: Synopsis, Trailer Preview, Cast */}
           <div className="lg:col-span-2 space-y-8">
             {/* Synopsis */}
-            <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-3">
+            <div className="neon-layout-border bg-slate-900/60 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-3">
               <h3 className="text-lg font-bold text-white">Synopsis</h3>
               <p
                 className={`text-sm text-slate-300 leading-relaxed ${
@@ -336,7 +336,7 @@ export const MovieDetailPage: React.FC = () => {
             </div>
 
             {/* Official Trailer Preview Card (Screenshot 4) */}
-            <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-4">
+            <div className="neon-layout-border bg-slate-900/60 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-4">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
                 <span>Official Trailer Preview</span>
               </h3>
@@ -407,7 +407,7 @@ export const MovieDetailPage: React.FC = () => {
             <WatchBoxDnaCard recommendation={dnaRecommendation} />
 
             {/* Production Details Metadata Card */}
-            <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 space-y-4">
+            <div className="neon-layout-border bg-slate-900/60 border border-slate-800 rounded-3xl p-6 space-y-4">
               <h4 className="text-sm font-bold text-white uppercase tracking-wider text-xs">
                 Production Details
               </h4>

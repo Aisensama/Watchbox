@@ -62,7 +62,7 @@ export const HomePage: React.FC<HomePageProps> = () => {
   // Filter trending movies by active genre pill if selected
   const allTrendingMovies = trendingData?.results || [];
   const filteredTrendingMovies = trendingGenreTab
-    ? allTrendingMovies.filter((m) => m.genreIds.includes(trendingGenreTab))
+    ? allTrendingMovies.filter((m) => m.genreIds?.includes(trendingGenreTab))
     : allTrendingMovies;
 
   const genreTabs = [
@@ -77,7 +77,7 @@ export const HomePage: React.FC<HomePageProps> = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0A0C10] text-slate-100 pb-16">
+    <div className="min-h-screen bg-[#050707] text-[#F5F0E6] pb-16">
       {/* TMDB Unconfigured Diagnostic Banner */}
       {!isTmdbReady && (
         <div className="bg-amber-950/60 border-b border-amber-600/40 px-4 py-3 text-xs text-amber-200">
@@ -136,7 +136,7 @@ export const HomePage: React.FC<HomePageProps> = () => {
               <Link
                 key={item.id}
                 to={`/movies/${item.tmdbId}`}
-                className="group relative rounded-xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-emerald-500/50 transition-all"
+                className="neon-layout-border group relative rounded-xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-emerald-500/50 transition-all"
               >
                 <div className="aspect-[16/9] w-full overflow-hidden bg-slate-950">
                   <img
@@ -209,7 +209,7 @@ export const HomePage: React.FC<HomePageProps> = () => {
             {(dnaData?.recommendations || []).slice(0, 5).map((rec) => (
               <div
                 key={rec.movie.id}
-                className="group relative flex flex-col rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-rose-500/50 hover:shadow-xl hover:shadow-rose-950/30 transition-all"
+                className="neon-layout-border group relative flex flex-col rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-rose-500/50 hover:shadow-xl hover:shadow-rose-950/30 transition-all"
               >
                 <Link
                   to={`/movies/${rec.movie.id}`}
@@ -285,7 +285,7 @@ export const HomePage: React.FC<HomePageProps> = () => {
             {collectionsData.collections.slice(0, 3).map((col) => (
               <div
                 key={col.id}
-                className="group relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-slate-700 transition-all p-5 flex flex-col justify-between"
+                className="neon-layout-border group relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-slate-700 transition-all p-5 flex flex-col justify-between"
               >
                 {col.coverImage && (
                   <div className="absolute inset-0 z-0 opacity-20 group-hover:opacity-30 transition-opacity">

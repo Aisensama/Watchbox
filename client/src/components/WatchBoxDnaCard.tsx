@@ -11,7 +11,7 @@ export const WatchBoxDnaCard: React.FC<WatchBoxDnaCardProps> = ({ recommendation
   const { movie, affinityScore, reasons, dimensions } = recommendation;
 
   return (
-    <div className="rounded-2xl bg-slate-900/80 border border-slate-800 p-5 space-y-4 shadow-xl">
+    <div className="neon-layout-border rounded-2xl bg-slate-900/80 border border-slate-800 p-5 space-y-4 shadow-xl">
       {/* Top Header */}
       <div className="flex items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
         <div className="flex items-center gap-2">

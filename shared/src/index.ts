@@ -138,6 +138,7 @@ export const MovieFilterQuerySchema = z.object({
     ])
     .default("popularity.desc"),
   search: z.string().trim().optional(),
+  type: z.enum(["all", "movie", "movies", "tv"]).optional(),
 });
 export type MovieFilterQuery = z.infer<typeof MovieFilterQuerySchema>;
 

@@ -74,6 +74,7 @@ export const useDiscoverMovies = (filters: MovieFilterQuery) => {
   if (filters.year) params.set("year", String(filters.year));
   if (filters.sortBy) params.set("sortBy", filters.sortBy);
   if (filters.search) params.set("search", filters.search);
+  if (filters.type) params.set("type", filters.type);
 
   return useQuery({
     queryKey: ["movies", "discover", filters],

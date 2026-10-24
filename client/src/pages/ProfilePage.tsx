@@ -100,7 +100,7 @@ export const ProfilePage: React.FC = () => {
     <div className="min-h-screen bg-[#0A0C10] text-slate-100 pt-24 pb-20 px-4 sm:px-8">
       <div className="max-w-5xl mx-auto space-y-10">
         {/* Profile Header Card */}
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-slate-900/90 to-purple-950/30 border border-slate-800 p-6 sm:p-10 shadow-2xl">
+        <div className="neon-layout-border relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-slate-900/90 to-purple-950/30 border border-slate-800 p-6 sm:p-10 shadow-2xl">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div className="flex items-center gap-5">
               <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-rose-600 via-pink-600 to-indigo-600 flex items-center justify-center text-2xl font-black text-white uppercase shadow-xl shadow-rose-600/30">

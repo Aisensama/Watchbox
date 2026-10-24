@@ -134,11 +134,13 @@ const fetchFromTmdb = async <T>(
 
 interface RawTmdbMovie {
   id: number;
-  title: string;
+  title?: string;
+  name?: string;
   overview?: string;
   poster_path?: string | null;
   backdrop_path?: string | null;
   release_date?: string;
+  first_air_date?: string;
   vote_average?: number;
   vote_count?: number;
   genre_ids?: number[];
@@ -172,11 +174,11 @@ interface RawTmdbVideo {
 
 const normalizeMovieSummary = (raw: RawTmdbMovie): MovieSummary => ({
   id: raw.id,
-  title: raw.title,
+  title: raw.title || raw.name || "Untitled",
   overview: raw.overview || "",
   posterPath: raw.poster_path ?? null,
   backdropPath: raw.backdrop_path ?? null,
-  releaseDate: raw.release_date || "",
+  releaseDate: raw.release_date || raw.first_air_date || "",
   voteAverage: Number((raw.vote_average || 0).toFixed(1)),
   voteCount: raw.vote_count || 0,
   genreIds: raw.genre_ids || [],
@@ -253,16 +255,18 @@ export const tmdbService = {
 
   searchMovies: async (
     query: string,
-    page = 1
+    page = 1,
+    type?: string
   ): Promise<{ results: MovieSummary[]; page: number; totalPages: number }> => {
     if (!query.trim()) {
       return { results: [], page: 1, totalPages: 0 };
     }
+    const endpoint = type === "tv" ? "/search/tv" : "/search/movie";
     const data = await fetchFromTmdb<{
       results: RawTmdbMovie[];
       page: number;
       total_pages: number;
-    }>("/search/movie", { query: query.trim(), page, include_adult: "false" });
+    }>(endpoint, { query: query.trim(), page, include_adult: "false" });
     return {
       results: data.results.map(normalizeMovieSummary),
       page: data.page,
@@ -275,7 +279,10 @@ export const tmdbService = {
     genre?: number;
     year?: number;
     sortBy?: string;
+    type?: string;
   }): Promise<{ results: MovieSummary[]; page: number; totalPages: number }> => {
+    const isTv = filters.type === "tv";
+    const endpoint = isTv ? "/discover/tv" : "/discover/movie";
     const params: Record<string, string | number> = {
       page: filters.page || 1,
       include_adult: "false",
@@ -285,7 +292,11 @@ export const tmdbService = {
       params["with_genres"] = filters.genre;
     }
     if (filters.year) {
-      params["primary_release_year"] = filters.year;
+      if (isTv) {
+        params["first_air_date_year"] = filters.year;
+      } else {
+        params["primary_release_year"] = filters.year;
+      }
     }
     if (filters.sortBy) {
       params["sort_by"] = filters.sortBy;
@@ -295,7 +306,7 @@ export const tmdbService = {
       results: RawTmdbMovie[];
       page: number;
       total_pages: number;
-    }>("/discover/movie", params);
+    }>(endpoint, params);
 
     return {
       results: data.results.map(normalizeMovieSummary),

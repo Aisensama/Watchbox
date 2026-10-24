@@ -15,7 +15,7 @@ export const NeonButton: React.FC<NeonButtonProps> = ({
   icon,
   size = "md",
   showSparkle = false,
-  hoverText,
+  hoverText: _hoverText,
   gradientVariant: _gradientVariant,
   className = "",
   disabled = false,

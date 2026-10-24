@@ -10,6 +10,14 @@ import { TmdbIdSchema, MovieFilterQuerySchema } from "@watchbox/shared";
 
 export const movieRouter = Router();
 
+// Set Cache-Control header for instant browser caching (5 minutes fresh, 10 minutes stale-while-revalidate)
+movieRouter.use((req, res, next) => {
+  if (req.method === "GET") {
+    res.set("Cache-Control", "public, max-age=300, stale-while-revalidate=600");
+  }
+  next();
+});
+
 // Handle TMDB errors in a uniform way
 const handleTmdbError = (
   err: unknown,
@@ -117,7 +125,11 @@ movieRouter.get("/discover", async (req, res) => {
 
     // If search term is present in discover, delegate to search
     if (parsedQuery.search && parsedQuery.search.length > 0) {
-      const data = await tmdbService.searchMovies(parsedQuery.search, parsedQuery.page);
+      const data = await tmdbService.searchMovies(
+        parsedQuery.search,
+        parsedQuery.page,
+        parsedQuery.type
+      );
       res.status(200).json(data);
       return;
     }
@@ -127,6 +139,7 @@ movieRouter.get("/discover", async (req, res) => {
       genre: parsedQuery.genre,
       year: parsedQuery.year,
       sortBy: parsedQuery.sortBy,
+      type: parsedQuery.type,
     });
     res.status(200).json(data);
   } catch (err) {
