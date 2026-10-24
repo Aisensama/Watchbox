@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
-  Search,
   Filter,
   RotateCcw,
   ChevronLeft,
@@ -11,6 +10,7 @@ import {
 import { useDiscoverMovies, useGenres } from "../hooks/useMovies";
 import { MovieCard } from "../components/MovieCard";
 import { TrailerModal } from "../components/TrailerModal";
+import { GlowSearchInput } from "../components/GlowSearchInput";
 import { apiClient } from "../api/client";
 
 import type { MovieFilterQuery } from "@watchbox/shared";
@@ -175,23 +175,14 @@ export const ExplorePage: React.FC = () => {
         </div>
 
         {/* Search Bar */}
-        <div className="relative max-w-md w-full">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <input
-            type="text"
+        {/* Glowing Futuristic Search Bar */}
+        <div className="max-w-lg w-full">
+          <GlowSearchInput
             value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
+            onChange={setSearchInput}
+            onFilterClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
             placeholder="Search by movie title or keyword..."
-            className="w-full bg-slate-900/90 border border-slate-800 text-xs sm:text-sm text-slate-100 pl-10 pr-4 py-3 rounded-2xl focus:outline-none focus:border-rose-500 transition-colors shadow-inner"
           />
-          {searchInput && (
-            <button
-              onClick={() => setSearchInput("")}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white"
-            >
-              Clear
-            </button>
-          )}
         </div>
 
         {/* Content Layout: Filters Sidebar + Movies Grid */}

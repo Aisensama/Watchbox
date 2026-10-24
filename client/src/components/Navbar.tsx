@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Film,
-  Search,
   Bell,
   Menu,
   X,
@@ -13,6 +12,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { GlowSearchInput } from "./GlowSearchInput";
 
 interface NavbarProps {
   onOpenAuthModal?: (mode: "login" | "register") => void;
@@ -27,8 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSearchSubmit = () => {
     if (searchQuery.trim()) {
       navigate(`/explore?search=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery("");
@@ -95,19 +94,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
         {/* Right: Search, Notifications, Profile / Auth */}
         <div className="flex items-center gap-3">
           {/* Search bar */}
-          <form
-            onSubmit={handleSearchSubmit}
-            className="relative hidden sm:block w-48 lg:w-64"
-          >
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input
-              type="text"
+          {/* Glowing Search bar */}
+          <div className="hidden sm:block w-52 lg:w-72">
+            <GlowSearchInput
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search movies, genres..."
-              className="w-full bg-slate-900/90 border border-slate-800 text-xs text-slate-200 placeholder-slate-400 pl-9 pr-3 py-2 rounded-full focus:outline-none focus:border-rose-500/80 transition-colors"
+              onChange={setSearchQuery}
+              placeholder="Search movies..."
+              onSubmit={handleSearchSubmit}
+              onFilterClick={() => navigate("/explore")}
+              compact
             />
-          </form>
+          </div>
 
           {/* Notification Bell */}
           <div className="relative">
@@ -239,16 +236,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-slate-800 bg-[#0A0C10] px-4 py-4 space-y-3 animate-in slide-in-from-top-2">
-          <form onSubmit={handleSearchSubmit} className="relative w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input
-              type="text"
+          <div className="w-full">
+            <GlowSearchInput
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={setSearchQuery}
               placeholder="Search movies, genres..."
-              className="w-full bg-slate-900 border border-slate-800 text-xs text-slate-200 pl-9 pr-3 py-2.5 rounded-xl focus:outline-none focus:border-rose-500"
+              onSubmit={handleSearchSubmit}
+              onFilterClick={() => {
+                navigate("/explore");
+                setMobileMenuOpen(false);
+              }}
             />
-          </form>
+          </div>
 
           <div className="flex flex-col gap-1 pt-1">
             {navLinks.map((link) => {

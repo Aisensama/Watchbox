@@ -55,3 +55,361 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #374151;
 }
+
+/* ==========================================================================
+   WatchBox Glowing Input Styling (Inspired by Uiverse by Lakshay-art)
+   Smoothed, responsive, and hardware-accelerated
+   ========================================================================== */
+
+.wb-glow-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  isolation: isolate;
+}
+
+.wb-poda {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.wb-white,
+.wb-border,
+.wb-darkBorderBg,
+.wb-glow {
+  height: calc(100% + 4px);
+  width: calc(100% + 4px);
+  position: absolute;
+  overflow: hidden;
+  z-index: -1;
+  border-radius: 14px;
+  pointer-events: none;
+}
+
+.wb-glow {
+  filter: blur(24px);
+  opacity: 0.35;
+  height: calc(100% + 16px);
+  width: calc(100% + 16px);
+  transition: opacity 0.5s ease;
+}
+
+.wb-glow::before {
+  content: "";
+  z-index: -2;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(60deg);
+  position: absolute;
+  width: 999px;
+  height: 999px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-image: conic-gradient(
+    #000,
+    #402fb5 8%,
+    #000 35%,
+    #000 50%,
+    #cf30aa 60%,
+    #000 88%
+  );
+  transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.wb-darkBorderBg {
+  filter: blur(3px);
+  border-radius: 14px;
+}
+
+.wb-darkBorderBg::before {
+  content: "";
+  z-index: -2;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(82deg);
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-image: conic-gradient(
+    rgba(0, 0, 0, 0),
+    #1e1b4b 10%,
+    rgba(0, 0, 0, 0) 30%,
+    rgba(0, 0, 0, 0) 50%,
+    #831843 60%,
+    rgba(0, 0, 0, 0) 80%
+  );
+  transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.wb-white {
+  filter: blur(1.5px);
+  border-radius: 13px;
+}
+
+.wb-white::before {
+  content: "";
+  z-index: -2;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(83deg);
+  position: absolute;
+  width: 700px;
+  height: 700px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  filter: brightness(1.3);
+  background-image: conic-gradient(
+    rgba(0, 0, 0, 0) 0%,
+    #a78bfa 6%,
+    rgba(0, 0, 0, 0) 12%,
+    rgba(0, 0, 0, 0) 50%,
+    #f472b6 58%,
+    rgba(0, 0, 0, 0) 65%
+  );
+  transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.wb-border {
+  border-radius: 13px;
+  filter: blur(0.5px);
+}
+
+.wb-border::before {
+  content: "";
+  z-index: -2;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(70deg);
+  position: absolute;
+  width: 700px;
+  height: 700px;
+  filter: brightness(1.2);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-image: conic-gradient(
+    #11141b,
+    #6366f1 5%,
+    #11141b 15%,
+    #11141b 50%,
+    #f43f5e 60%,
+    #11141b 65%
+  );
+  transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+/* Hover rotations */
+.wb-poda:hover > .wb-darkBorderBg::before {
+  transform: translate(-50%, -50%) rotate(240deg);
+}
+.wb-poda:hover > .wb-glow::before {
+  transform: translate(-50%, -50%) rotate(220deg);
+}
+.wb-poda:hover > .wb-white::before {
+  transform: translate(-50%, -50%) rotate(243deg);
+}
+.wb-poda:hover > .wb-border::before {
+  transform: translate(-50%, -50%) rotate(230deg);
+}
+
+/* Focus-within smooth rotations */
+.wb-poda:focus-within > .wb-glow {
+  opacity: 0.65;
+}
+.wb-poda:focus-within > .wb-darkBorderBg::before {
+  transform: translate(-50%, -50%) rotate(442deg);
+  transition: transform 3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.wb-poda:focus-within > .wb-glow::before {
+  transform: translate(-50%, -50%) rotate(420deg);
+  transition: transform 3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.wb-poda:focus-within > .wb-white::before {
+  transform: translate(-50%, -50%) rotate(443deg);
+  transition: transform 3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.wb-poda:focus-within > .wb-border::before {
+  transform: translate(-50%, -50%) rotate(430deg);
+  transition: transform 3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wb-main {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.wb-input {
+  background-color: #06080c;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+  height: 52px;
+  border-radius: 12px;
+  color: #f8fafc;
+  padding-left: 50px;
+  padding-right: 56px;
+  font-size: 14px;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.wb-glow-wrapper.compact .wb-input {
+  height: 40px;
+  padding-left: 40px;
+  padding-right: 42px;
+  font-size: 13px;
+  border-radius: 10px;
+}
+
+.wb-input::placeholder {
+  color: #94a3b8;
+}
+
+.wb-input:focus {
+  outline: none;
+  background-color: #080b12;
+  border-color: rgba(244, 63, 94, 0.5);
+}
+
+.wb-main:focus-within > .wb-input-mask {
+  opacity: 0;
+}
+
+.wb-input-mask {
+  pointer-events: none;
+  width: 100px;
+  height: 22px;
+  position: absolute;
+  background: linear-gradient(90deg, transparent, #06080c);
+  top: 15px;
+  left: 60px;
+  transition: opacity 0.4s ease;
+}
+
+.wb-glow-wrapper.compact .wb-input-mask {
+  height: 18px;
+  top: 11px;
+  left: 44px;
+}
+
+.wb-pink-mask {
+  pointer-events: none;
+  width: 32px;
+  height: 22px;
+  position: absolute;
+  background: #f43f5e;
+  top: 10px;
+  left: 8px;
+  filter: blur(16px);
+  opacity: 0.6;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.wb-main:hover > .wb-pink-mask {
+  opacity: 0.2;
+}
+
+.wb-search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.wb-glow-wrapper.compact .wb-search-icon {
+  left: 12px;
+}
+
+.wb-filter-btn {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  height: 38px;
+  width: 38px;
+  border-radius: 10px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.wb-glow-wrapper.compact .wb-filter-btn {
+  height: 30px;
+  width: 30px;
+  right: 5px;
+}
+
+.wb-filterBorder {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  overflow: hidden;
+  border-radius: 9px;
+  pointer-events: none;
+}
+
+.wb-filterBorder::before {
+  content: "";
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(90deg);
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  filter: brightness(1.35);
+  background-image: conic-gradient(
+    rgba(0, 0, 0, 0),
+    #6366f1,
+    rgba(0, 0, 0, 0) 40%,
+    rgba(0, 0, 0, 0) 60%,
+    #f43f5e,
+    rgba(0, 0, 0, 0) 100%
+  );
+  animation: wb-rotate-slow 6s linear infinite;
+}
+
+.wb-filter-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100% - 2px);
+  width: calc(100% - 2px);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #11141b, #0a0c10, #17162b);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.wb-filter-btn:hover .wb-filter-icon {
+  background: linear-gradient(180deg, #1e1b4b, #11141b, #2e1065);
+  border-color: rgba(244, 63, 94, 0.4);
+}
+
+@keyframes wb-rotate-slow {
+  100% {
+    transform: translate(-50%, -50%) rotate(450deg);
+  }
+}

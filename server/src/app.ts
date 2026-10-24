@@ -69,6 +69,26 @@ if (mongoUri && !mongoUri.includes("<") && !mongoUri.includes("your_password")) 
         secret: sessionSecret,
       },
     });
+    sessionStore.on("error", (err) => {
+      console.warn(
+        "[WatchBox Server] Session store connection notice:",
+        err.message
+      );
+    });
+    // Prevent unhandled promise rejection in Node 24 when Mongo is temporarily unreachable
+    const rawStore = sessionStore as unknown as {
+      clientP?: Promise<unknown>;
+      collectionP?: Promise<unknown>;
+    };
+    rawStore.clientP?.catch((err: Error) => {
+      console.warn(
+        "[WatchBox Server] MongoStore client connection notice:",
+        err.message
+      );
+    });
+    rawStore.collectionP?.catch(() => {
+      // Caught to prevent unhandled rejection termination
+    });
   } catch (err) {
     console.warn(
       "[WatchBox Server] Could not initialize MongoStore, falling back to memory session:",
