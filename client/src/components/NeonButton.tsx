@@ -37,22 +37,22 @@ export const NeonButton: React.FC<NeonButtonProps> = ({
     <button
       {...props}
       disabled={disabled}
-      className={`group relative p-[1.5px] inline-flex items-center justify-center transition-all duration-300 ease-out hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none disabled:hover:scale-100 cursor-pointer overflow-hidden bg-gradient-to-br from-red-950 via-rose-600 to-red-900 hover:from-rose-500 hover:via-red-500 hover:to-rose-600 hover:shadow-xl hover:shadow-rose-600/50 ${
+      className={`group relative p-[1.5px] inline-flex items-center justify-center transition-all duration-300 ease-out hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none disabled:hover:scale-100 cursor-pointer overflow-hidden bg-gradient-to-br from-[#927442] via-[#E4B85A] to-[#FFD985] hover:from-[#E4B85A] hover:via-[#FFD985] hover:to-[#FFFFFF] hover:shadow-xl hover:shadow-[#E4B85A]/40 ${
         size === "sm" ? "rounded-lg" : size === "lg" ? "rounded-2xl" : "rounded-xl"
       } ${className}`}
     >
-      {/* Inner Black Backdrop with Glass Blur */}
+      {/* Inner Dark Backdrop with Glass Blur */}
       <div
-        className={`w-full h-full bg-black/90 group-hover:bg-black/75 backdrop-blur-xl transition-all duration-300 flex items-center justify-center ${innerRadius} ${sizeClasses}`}
+        className={`w-full h-full bg-[#050707]/92 group-hover:bg-[#0A0D0D]/80 backdrop-blur-xl transition-all duration-300 flex items-center justify-center ${innerRadius} ${sizeClasses}`}
       >
-        <div className="flex items-center gap-2 text-rose-500 group-hover:text-rose-400 font-bold tracking-wide transition-all duration-300 group-hover:drop-shadow-[0_0_10px_rgba(244,63,94,0.85)]">
+        <div className="flex items-center gap-2 text-[#E4B85A] group-hover:text-[#FFD985] font-bold tracking-wide transition-all duration-300 group-hover:drop-shadow-[0_0_12px_rgba(228,184,90,0.85)]">
           {showSparkle && (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth="2"
-              className="w-4 h-4 stroke-rose-500 group-hover:stroke-rose-400 transition-colors animate-pulse"
+              className="w-4 h-4 stroke-[#E4B85A] group-hover:stroke-[#FFD985] transition-colors animate-pulse"
             >
               <path
                 strokeLinecap="round"

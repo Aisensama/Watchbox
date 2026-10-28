@@ -6,6 +6,7 @@ import { ToastProvider } from "./context/ToastContext";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { AuthModal } from "./components/AuthModal";
+import { NeonGoldLoader } from "./components/NeonGoldLoader";
 
 // Code-split pages for instant initial bundle loading
 const HomePage = React.lazy(() =>
@@ -39,10 +40,10 @@ const RegisterPage = React.lazy(() =>
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes in memory: 0ms navigation lag
-      gcTime: 30 * 60 * 1000, // keep garbage collection cache for 30 minutes
+      retry: 2,
+      refetchOnWindowFocus: true,
+      staleTime: 60 * 1000, // 1 minute fresh window, auto-syncs on window focus
+      gcTime: 15 * 60 * 1000,
     },
   },
 });
@@ -65,7 +66,7 @@ export const AppContent: React.FC = () => {
           <React.Suspense
             fallback={
               <div className="min-h-[60vh] flex items-center justify-center">
-                <div className="w-8 h-8 rounded-full border-2 border-[#E4B85A] border-t-transparent animate-spin" />
+                <NeonGoldLoader size="md" label="Loading WatchBox..." />
               </div>
             }
           >

@@ -5,11 +5,56 @@ import { getDBStatus } from "../db.js";
 
 export const collectionRouter = Router();
 
+const STARTER_COLLECTIONS = [
+  {
+    id: "col-1",
+    title: "Mind-Bending Sci-Fi & Cosmic Horizons",
+    slug: "mind-bending-sci-fi",
+    description:
+      "Journey through wormholes, dystopian futures, and metaphysical realities with these cinema-defining sci-fi journeys.",
+    coverImage: "/api/movies/image-proxy?size=w1280&path=/xJHokMbljvjADYdit5fK5VQsXEG.jpg",
+    tmdbMovieIds: [157336, 693134, 335984, 264660, 329865, 603],
+    isFeatured: true,
+    isPublished: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    movies: [],
+  },
+  {
+    id: "col-2",
+    title: "Top Rated Modern Masterpieces",
+    slug: "top-rated-masterpieces",
+    description:
+      "Award-winning cinematic tours-de-force with legendary performances and visionary directing.",
+    coverImage: "/api/movies/image-proxy?size=w1280&path=/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg",
+    tmdbMovieIds: [872585, 278, 238, 155, 496243, 680],
+    isFeatured: true,
+    isPublished: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    movies: [],
+  },
+  {
+    id: "col-3",
+    title: "High-Octane Action & Thrills",
+    slug: "action-thrills-hub",
+    description:
+      "Relentless adrenaline, choreographed stunts, and tense edge-of-your-seat confrontations.",
+    coverImage: "/api/movies/image-proxy?size=w1280&path=/yDHYTfaA9g6c4h2n099m6Wc3jHn.jpg",
+    tmdbMovieIds: [533535, 786892, 414906, 76341, 603692],
+    isFeatured: true,
+    isPublished: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    movies: [],
+  },
+];
+
 // Get published collections
 collectionRouter.get("/", async (req, res) => {
   if (getDBStatus() !== "connected") {
-    // If DB is offline, return empty list gracefully
-    res.status(200).json({ collections: [] });
+    // If DB is offline, return starter collections gracefully
+    res.status(200).json({ collections: STARTER_COLLECTIONS });
     return;
   }
 

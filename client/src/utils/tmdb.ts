@@ -1,6 +1,3 @@
-const TMDB_IMAGE_BASE =
-  import.meta.env.VITE_TMDB_IMAGE_BASE_URL || "https://image.tmdb.org/t/p";
-
 export const TMDB_GENRES_MAP: Record<number, string> = {
   28: "Action",
   12: "Adventure",
@@ -30,7 +27,8 @@ export const getPosterUrl = (
   if (!path) {
     return "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=500&auto=format&fit=crop&q=60";
   }
-  return `${TMDB_IMAGE_BASE}/${size}${path}`;
+  if (path.startsWith("http")) return path;
+  return `/api/movies/image-proxy?size=${size}&path=${encodeURIComponent(path)}`;
 };
 
 export const getBackdropUrl = (
@@ -40,7 +38,8 @@ export const getBackdropUrl = (
   if (!path) {
     return "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1280&auto=format&fit=crop&q=80";
   }
-  return `${TMDB_IMAGE_BASE}/${size}${path}`;
+  if (path.startsWith("http")) return path;
+  return `/api/movies/image-proxy?size=${size}&path=${encodeURIComponent(path)}`;
 };
 
 export const formatRuntime = (minutes?: number | null): string => {

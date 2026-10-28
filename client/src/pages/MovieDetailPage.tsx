@@ -28,6 +28,7 @@ import {
   formatReleaseYear,
 } from "../utils/tmdb";
 import { TrailerModal } from "../components/TrailerModal";
+import { NeonGoldLoader } from "../components/NeonGoldLoader";
 import { RatingModal } from "../components/RatingModal";
 import { WatchBoxDnaCard } from "../components/WatchBoxDnaCard";
 import { SurfButton } from "../components/SurfButton";
@@ -83,11 +84,8 @@ export const MovieDetailPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0A0C10] flex items-center justify-center text-slate-400">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-rose-500 border-t-transparent rounded-full animate-spin" />
-          <p className="text-xs font-semibold">Loading movie presentation...</p>
-        </div>
+      <div className="min-h-screen bg-[#050707] flex items-center justify-center">
+        <NeonGoldLoader size="md" label="Loading movie presentation..." />
       </div>
     );
   }
@@ -297,7 +295,7 @@ export const MovieDetailPage: React.FC = () => {
                 icon={
                   <Star
                     className={`w-4 h-4 ${
-                      userRating ? "fill-amber-400 text-amber-400" : "text-amber-500"
+                      userRating ? "fill-[#E4B85A] text-[#E4B85A]" : "text-[#E4B85A]"
                     }`}
                   />
                 }

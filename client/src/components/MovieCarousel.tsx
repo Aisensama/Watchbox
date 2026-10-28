@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import type { MovieSummary } from "@watchbox/shared";
 import { MovieCard } from "./MovieCard";
 
@@ -7,6 +8,7 @@ interface MovieCarouselProps {
   title: string;
   subtitle?: string;
   movies: MovieSummary[];
+  isLoading?: boolean;
   onPlayTrailer?: (tmdbId: number, title: string) => void;
   genreFilterTabs?: { id: number | null; label: string }[];
   activeGenreTab?: number | null;
@@ -18,12 +20,14 @@ export const MovieCarousel: React.FC<MovieCarouselProps> = ({
   title,
   subtitle,
   movies,
+  isLoading = false,
   onPlayTrailer,
   genreFilterTabs,
   activeGenreTab = null,
   onSelectGenreTab,
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
 
   const scroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
@@ -87,15 +91,39 @@ export const MovieCarousel: React.FC<MovieCarouselProps> = ({
         ref={scrollContainerRef}
         className="flex gap-4 sm:gap-5 overflow-x-auto no-scrollbar px-4 sm:px-8 max-w-7xl mx-auto scroll-smooth py-2"
       >
-        {movies.length > 0 ? (
+        {isLoading ? (
+          Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="w-36 sm:w-44 md:w-48 shrink-0 aspect-[2/3] rounded-2xl bg-[#101414] animate-pulse border border-[#282B27]"
+            />
+          ))
+        ) : movies.length > 0 ? (
           movies.map((movie) => (
             <div key={movie.id} className="w-36 sm:w-44 md:w-48 shrink-0">
               <MovieCard movie={movie} onPlayTrailer={onPlayTrailer} useLetterSwap />
             </div>
           ))
         ) : (
-          <div className="w-full py-12 text-center text-[#A7A69F] text-sm bg-[#0A0D0D] rounded-2xl border border-[#282B27]">
-            No titles found in this selection
+          <div className="w-full py-12 text-center text-[#A7A69F] text-sm bg-[#0A0D0D] rounded-2xl border border-[#282B27] flex flex-col items-center justify-center gap-3">
+            <p>No titles found in this selection</p>
+            <div className="flex items-center gap-3 flex-wrap justify-center">
+              {onSelectGenreTab && activeGenreTab && (
+                <button
+                  onClick={() => onSelectGenreTab(null)}
+                  className="text-xs text-[#E4B85A] hover:underline cursor-pointer"
+                >
+                  Reset to All Titles →
+                </button>
+              )}
+              <button
+                onClick={() => queryClient.invalidateQueries({ queryKey: ["movies"] })}
+                className="px-3.5 py-1.5 rounded-full bg-[#171B1A] border border-[#282B27] text-xs font-medium text-[#E4B85A] hover:bg-[#282B27] transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Reload Live Titles</span>
+              </button>
+            </div>
           </div>
         )}
       </div>

@@ -46,6 +46,47 @@ movieRouter.get("/status", (_req, res) => {
   });
 });
 
+// Image Proxy to reliably serve TMDB posters and bypass ISP/DNS/adblocker blocks in regions like India
+movieRouter.get("/image-proxy", async (req, res) => {
+  try {
+    const imagePath = String(req.query.path || "");
+    const size = String(req.query.size || "w500");
+    if (!imagePath || imagePath.includes("..")) {
+      res.redirect(
+        "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=500&auto=format&fit=crop&q=60"
+      );
+      return;
+    }
+    const cleanPath = imagePath.startsWith("/") ? imagePath : `/${imagePath}`;
+    const targetUrl = `https://image.tmdb.org/t/p/${size}${cleanPath}`;
+
+    res.set("Cache-Control", "public, max-age=86400, stale-while-revalidate=604800");
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    const tmdbRes = await fetch(targetUrl, {
+      signal: controller.signal,
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) WatchBox/1.0",
+      },
+    });
+    clearTimeout(timeout);
+
+    if (tmdbRes.ok) {
+      const contentType = tmdbRes.headers.get("content-type") || "image/jpeg";
+      res.set("Content-Type", contentType);
+      const buffer = await tmdbRes.arrayBuffer();
+      res.send(Buffer.from(buffer));
+      return;
+    }
+  } catch (err) {
+    // If TMDB image fetch fails, redirect to curated unsplash movie fallback
+  }
+  res.redirect(
+    "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=500&auto=format&fit=crop&q=60"
+  );
+});
+
 // Trending movies
 movieRouter.get("/trending", async (req, res) => {
   try {

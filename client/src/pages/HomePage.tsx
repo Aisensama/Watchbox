@@ -36,9 +36,9 @@ export const HomePage: React.FC<HomePageProps> = () => {
 
   const isTmdbReady = statusData?.configured ?? true;
 
-  const { data: trendingData } = useTrendingMovies(1);
-  const { data: popularData } = usePopularMovies(1);
-  const { data: topRatedData } = useTopRatedMovies(1);
+  const { data: trendingData, isLoading: isLoadingTrending } = useTrendingMovies(1);
+  const { data: popularData, isLoading: isLoadingPopular } = usePopularMovies(1);
+  const { data: topRatedData, isLoading: isLoadingTopRated } = useTopRatedMovies(1);
   const { data: dnaData } = useDnaRecommendations();
   const { data: collectionsData } = useCuratedCollections(true);
   const { data: historyData } = useHistory();
@@ -106,13 +106,25 @@ export const HomePage: React.FC<HomePageProps> = () => {
         </div>
       )}
 
-      {/* Hero Banner with Trending Movies */}
-      {allTrendingMovies.length > 0 && (
+      {/* Hero Banner with Trending Movies or Skeleton */}
+      {allTrendingMovies.length > 0 ? (
         <HeroBanner
           movies={allTrendingMovies.slice(0, 5)}
           onPlayTrailer={handlePlayTrailer}
         />
-      )}
+      ) : isLoadingTrending ? (
+        <div className="relative w-full min-h-[460px] md:min-h-[560px] flex items-end pb-12 pt-24 bg-[#0A0D0D] border-b border-[#282B27] animate-pulse">
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 w-full space-y-4">
+            <div className="w-28 h-6 rounded-full bg-[#171B1A]" />
+            <div className="w-80 h-10 rounded-xl bg-[#171B1A]" />
+            <div className="w-96 h-4 rounded bg-[#171B1A]" />
+            <div className="flex gap-3 pt-2">
+              <div className="w-32 h-10 rounded-xl bg-[#171B1A]" />
+              <div className="w-32 h-10 rounded-xl bg-[#171B1A]" />
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {/* Continue Watching / History Row (if logged in and has watched movies) */}
       {historyData?.history && historyData.history.length > 0 && (
@@ -167,28 +179,32 @@ export const HomePage: React.FC<HomePageProps> = () => {
         title="Trending Now"
         subtitle="Most popular cinema worldwide today"
         movies={filteredTrendingMovies}
+        isLoading={isLoadingTrending}
         onPlayTrailer={handlePlayTrailer}
         genreFilterTabs={genreTabs}
         activeGenreTab={trendingGenreTab}
         onSelectGenreTab={(id) => setTrendingGenreTab(id)}
       />
 
-      {/* WatchBox DNA — Picks For You Section (Screenshot 2 & 5) */}
-      <section className="py-8 sm:py-10 bg-slate-950/60 border-y border-slate-900/80 my-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-6">
+      {/* WatchBox DNA — Picks For You Section (Neon Gold Effect) */}
+      <section className="py-8 sm:py-10 bg-[#0A0D0D] border-y border-[#282B27]/80 my-4 relative overflow-hidden">
+        {/* Ambient neon gold glow background */}
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#E4B85A]/5 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-6 relative z-10">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-2xl bg-gradient-to-tr from-rose-500 to-indigo-600 shadow-lg shadow-rose-600/20 text-white">
+              <div className="p-2.5 rounded-2xl bg-gradient-to-tr from-[#927442]/30 via-[#E4B85A]/20 to-[#FFD985]/10 border border-[#E4B85A]/40 shadow-lg shadow-[#E4B85A]/15 text-[#FFD985]">
                 <Dna className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#F5F0E6] flex items-center gap-2">
                   <span>WatchBox DNA</span>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-[#E4B85A]/15 text-[#FFD985] border border-[#E4B85A]/40 shadow-sm shadow-[#E4B85A]/10">
                     Picks For You
                   </span>
                 </h2>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-[#A7A69F] mt-0.5">
                   {dnaData?.summary ||
                     "Deterministic taste matching powered by genre vectors, history, and your movie ratings."}
                 </p>
@@ -197,10 +213,10 @@ export const HomePage: React.FC<HomePageProps> = () => {
 
             <Link
               to="/profile"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-400 hover:text-rose-300"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#E4B85A] hover:text-[#FFD985] transition-colors group"
             >
               <span>See Taste Calibrations</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
 
@@ -209,11 +225,11 @@ export const HomePage: React.FC<HomePageProps> = () => {
             {(dnaData?.recommendations || []).slice(0, 5).map((rec) => (
               <div
                 key={rec.movie.id}
-                className="neon-layout-border group relative flex flex-col rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-rose-500/50 hover:shadow-xl hover:shadow-rose-950/30 transition-all"
+                className="neon-layout-border group relative flex flex-col rounded-2xl overflow-hidden bg-[#101414] border border-[#282B27] hover:border-[#E4B85A]/60 hover:shadow-xl hover:shadow-[#E4B85A]/10 hover:-translate-y-1 transition-all duration-300"
               >
                 <Link
                   to={`/movies/${rec.movie.id}`}
-                  className="block relative aspect-[2/3] w-full overflow-hidden bg-slate-950"
+                  className="block relative aspect-[2/3] w-full overflow-hidden bg-[#0A0D0D]"
                 >
                   <img
                     src={getBackdropUrl(rec.movie.posterPath, "w780")}
@@ -221,33 +237,33 @@ export const HomePage: React.FC<HomePageProps> = () => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   {/* Affinity Score Pill */}
-                  <div className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full bg-slate-950/90 border border-rose-500/60 text-rose-300 font-extrabold text-xs shadow-lg flex items-center gap-1">
-                    <Sparkles className="w-3 h-3 text-rose-400" />
+                  <div className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full bg-[#050707]/90 border border-[#E4B85A]/60 text-[#FFD985] font-extrabold text-xs shadow-lg flex items-center gap-1 shadow-black/60">
+                    <Sparkles className="w-3 h-3 text-[#E4B85A]" />
                     <span>{rec.affinityScore}%</span>
                   </div>
                 </Link>
 
-                <div className="p-3.5 flex flex-col justify-between flex-1">
+                <div className="p-3.5 flex flex-col justify-between flex-1 bg-[#101414]">
                   <div>
                     <Link
                       to={`/movies/${rec.movie.id}`}
-                      className="text-xs sm:text-sm font-bold text-slate-100 hover:text-rose-400 transition-colors line-clamp-1"
+                      className="text-xs sm:text-sm font-bold text-[#F5F0E6] hover:text-[#FFD985] transition-colors line-clamp-1"
                     >
                       {rec.movie.title}
                     </Link>
-                    <p className="text-[11px] text-slate-400 line-clamp-1 mt-1">
+                    <p className="text-[11px] text-[#A7A69F] line-clamp-1 mt-1">
                       {rec.reasons[0] || "High affinity match"}
                     </p>
                   </div>
 
-                  <div className="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
-                    <div className="flex items-center gap-1 text-amber-400 font-semibold">
-                      <Star className="w-3 h-3 fill-amber-400" />
+                  <div className="mt-3 pt-2 border-t border-[#282B27] flex items-center justify-between text-[11px] text-[#A7A69F]">
+                    <div className="flex items-center gap-1 text-[#E4B85A] font-bold">
+                      <Star className="w-3.5 h-3.5 fill-[#E4B85A] text-[#E4B85A]" />
                       <span>{rec.movie.voteAverage.toFixed(1)}</span>
                     </div>
                     <button
                       onClick={() => handlePlayTrailer(rec.movie.id, rec.movie.title)}
-                      className="text-rose-400 hover:text-white font-medium"
+                      className="text-[#E4B85A] hover:text-[#FFD985] font-semibold transition-colors flex items-center gap-0.5"
                     >
                       Trailer →
                     </button>
@@ -260,14 +276,13 @@ export const HomePage: React.FC<HomePageProps> = () => {
       </section>
 
       {/* Popular Movies Carousel */}
-      {popularData && (
-        <MovieCarousel
-          title="Popular Across All Audiences"
-          subtitle="Top streamed and discussed films this month"
-          movies={popularData.results}
-          onPlayTrailer={handlePlayTrailer}
-        />
-      )}
+      <MovieCarousel
+        title="Popular Across All Audiences"
+        subtitle="Top streamed and discussed films this month"
+        movies={popularData?.results || []}
+        isLoading={isLoadingPopular}
+        onPlayTrailer={handlePlayTrailer}
+      />
 
       {/* Featured Curated Collections (from MongoDB Admin) */}
       {collectionsData?.collections && collectionsData.collections.length > 0 && (
@@ -328,14 +343,13 @@ export const HomePage: React.FC<HomePageProps> = () => {
       )}
 
       {/* Top Rated Masterpieces Carousel */}
-      {topRatedData && (
-        <MovieCarousel
-          title="Top Rated Masterpieces"
-          subtitle="Highest rated movies in cinematic history"
-          movies={topRatedData.results}
-          onPlayTrailer={handlePlayTrailer}
-        />
-      )}
+      <MovieCarousel
+        title="Top Rated Masterpieces"
+        subtitle="Highest rated movies in cinematic history"
+        movies={topRatedData?.results || []}
+        isLoading={isLoadingTopRated}
+        onPlayTrailer={handlePlayTrailer}
+      />
 
       {/* Trailer Modal */}
       <TrailerModal

@@ -7,7 +7,6 @@ import { useWatchlist, useAddToWatchlist, useRemoveFromWatchlist } from "../hook
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import { apiClient } from "../api/client";
-import RandomLetterSwap from "./RandomLetterSwap";
 
 interface MovieCardProps {
   movie: MovieSummary;
@@ -20,7 +19,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
   movie,
   onPlayTrailer,
   className = "",
-  useLetterSwap = false,
+  useLetterSwap: _useLetterSwap = false,
 }) => {
   const { user } = useAuth();
   const { showToast } = useToast();
@@ -132,7 +131,6 @@ export const MovieCard: React.FC<MovieCardProps> = ({
     <div
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      style={{ contentVisibility: "auto", containIntrinsicSize: "320px" }}
       className={`neon-layout-border group relative flex flex-col rounded-2xl overflow-hidden bg-[#101414] border border-[#282B27] transition-all duration-300 hover:shadow-xl hover:shadow-black/60 hover:-translate-y-1 ${className}`}
     >
       {/* Poster Image Container */}
@@ -235,9 +233,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
               setImageLoaded(true);
             }
           }}
-          className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${
-            imageLoaded ? "opacity-100" : "opacity-0"
-          }`}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-100"
         />
 
         {/* Subtle Trailer Button on Hover */}
@@ -270,15 +266,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
               className="block text-sm font-bold text-[#F5F0E6] truncate group-hover:text-[#FFD985] transition-colors"
               title={movie.title}
             >
-              {useLetterSwap ? (
-                <RandomLetterSwap
-                  label={movie.title}
-                  color="inherit"
-                  staggerDuration={0.03}
-                />
-              ) : (
-                movie.title
-              )}
+              {movie.title}
             </Link>
             <p className="text-xs text-[#A7A69F] truncate mt-0.5">
               {formatMovieMetadata(movie.releaseDate, movie.genreIds)}

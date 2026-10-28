@@ -1,3 +1,15 @@
+import "dotenv/config";
+import dns from "node:dns";
+try {
+  dns.setDefaultResultOrder("ipv4first");
+  const servers = dns.getServers();
+  if (servers.length === 0 || servers.every((s) => s === "127.0.0.1" || s === "::1")) {
+    dns.setServers(["8.8.8.8", "1.1.1.1"]);
+  }
+} catch {
+  // Ignore in environments where not supported
+}
+
 import { app } from "./app.js";
 import { connectDB, disconnectDB } from "./db.js";
 
@@ -11,7 +23,7 @@ connectDB().catch((err) => {
   );
 });
 
-const server = app.listen(PORT, () => {
+const server = app.listen(Number(PORT), "0.0.0.0", () => {
   console.log(`[WatchBox Server] Listening on http://localhost:${PORT}`);
 });
 

@@ -1,3 +1,15 @@
+import "dotenv/config";
+import dns from "node:dns";
+try {
+  dns.setDefaultResultOrder("ipv4first");
+  const servers = dns.getServers();
+  if (servers.length === 0 || servers.every((s) => s === "127.0.0.1" || s === "::1")) {
+    dns.setServers(["8.8.8.8", "1.1.1.1"]);
+  }
+} catch {
+  // Ignore in environments where not supported
+}
+
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
@@ -34,6 +46,7 @@ app.use(
   helmet({
     contentSecurityPolicy: false, // allow YouTube embed and TMDB image CDN
     crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: "cross-origin" },
   })
 );
 
