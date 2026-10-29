@@ -1,4 +1,13 @@
+import dns from "node:dns";
 import mongoose from "mongoose";
+
+// Ensure resilient public DNS (Google & Cloudflare) for MongoDB Atlas SRV resolution
+try {
+  dns.setDefaultResultOrder("ipv4first");
+  dns.setServers(["8.8.8.8", "1.1.1.1"]);
+} catch {
+  // ignore in non-Node or restricted environments
+}
 
 let isConnecting = false;
 

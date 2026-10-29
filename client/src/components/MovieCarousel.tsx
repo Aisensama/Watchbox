@@ -117,8 +117,11 @@ export const MovieCarousel: React.FC<MovieCarouselProps> = ({
                 </button>
               )}
               <button
-                onClick={() => queryClient.invalidateQueries({ queryKey: ["movies"] })}
-                className="px-3.5 py-1.5 rounded-full bg-[#171B1A] border border-[#282B27] text-xs font-medium text-[#E4B85A] hover:bg-[#282B27] transition-all flex items-center gap-1.5 cursor-pointer"
+                onClick={() => {
+                  queryClient.invalidateQueries({ queryKey: ["movies"] });
+                  queryClient.refetchQueries({ queryKey: ["movies"] });
+                }}
+                className="px-3.5 py-1.5 rounded-full bg-[#171B1A] border border-[#282B27] text-xs font-medium text-[#E4B85A] hover:bg-[#282B27] transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-[#E4B85A]/10 active:scale-95"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 <span>Reload Live Titles</span>
