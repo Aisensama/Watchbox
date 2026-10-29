@@ -4,6 +4,8 @@ import mongoose, { Schema } from "mongoose";
 export interface IRating extends Document {
   user: mongoose.Types.ObjectId;
   tmdbId: number;
+  movieTitle?: string;
+  posterPath?: string;
   score: number;
   reviewNote?: string;
   createdAt: Date;
@@ -22,6 +24,14 @@ const ratingSchema = new Schema<IRating>(
       type: Number,
       required: true,
       index: true,
+    },
+    movieTitle: {
+      type: String,
+      trim: true,
+    },
+    posterPath: {
+      type: String,
+      trim: true,
     },
     score: {
       type: Number,

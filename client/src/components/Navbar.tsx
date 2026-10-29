@@ -492,9 +492,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
                 onClick={() =>
                   onOpenAuthModal ? onOpenAuthModal("register") : navigate("/register")
                 }
-                className="border border-[#E4B85A] text-[#E4B85A] hover:bg-[#E4B85A] hover:text-[#050707] rounded-lg px-3.5 py-1.5 text-xs font-semibold tracking-wide transition-all"
+                className="bg-[#101414] text-[#E4B85A] border border-[#E4B85A] border-b-4 font-medium overflow-hidden relative px-3.5 py-1.5 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group inline-flex items-center justify-center text-xs tracking-wide cursor-pointer"
               >
-                Join Free
+                <span className="bg-[#E4B85A] shadow-[#E4B85A] absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(228,184,90,0.3)] pointer-events-none" />
+                <span className="relative z-10 font-bold group-hover:text-[#FFD985]">Join Free</span>
               </button>
             </div>
           )}

@@ -68,21 +68,27 @@ watchlistRouter.post("/", validateBody(AddWatchlistInputSchema), async (req, res
       return;
     }
 
+    // Fetch movie summary if available
+    let movie = null;
+    let movieTitle: string | undefined;
+    let posterPath: string | undefined;
+    try {
+      movie = await tmdbService.getMovieDetails(tmdbId);
+      movieTitle = movie?.title || undefined;
+      posterPath = movie?.posterPath || undefined;
+    } catch {
+      // ignore
+    }
+
     const item = new Watchlist({
       user: userId,
       tmdbId,
+      movieTitle,
+      posterPath,
       addedAt: new Date(),
     });
 
     await item.save();
-
-    // Fetch movie summary if available
-    let movie = null;
-    try {
-      movie = await tmdbService.getMovieDetails(tmdbId);
-    } catch {
-      // ignore
-    }
 
     res.status(201).json({
       message: "Added to watchlist",
@@ -90,6 +96,8 @@ watchlistRouter.post("/", validateBody(AddWatchlistInputSchema), async (req, res
         id: item._id.toString(),
         userId: item.user.toString(),
         tmdbId: item.tmdbId,
+        movieTitle: item.movieTitle,
+        posterPath: item.posterPath,
         addedAt: item.addedAt.toISOString(),
         movie,
       },

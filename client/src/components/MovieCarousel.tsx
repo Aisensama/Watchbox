@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import type { MovieSummary } from "@watchbox/shared";
@@ -25,6 +26,7 @@ export const MovieCarousel: React.FC<MovieCarouselProps> = ({
   genreFilterTabs,
   activeGenreTab = null,
   onSelectGenreTab,
+  seeAllLink,
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
@@ -49,7 +51,17 @@ export const MovieCarousel: React.FC<MovieCarouselProps> = ({
           )}
         </div>
 
-        <div className="flex items-center gap-2 self-end sm:self-auto">
+        <div className="flex items-center gap-2.5 self-end sm:self-auto">
+          {seeAllLink && (
+            <Link
+              to={seeAllLink}
+              className="text-xs font-semibold text-[#E4B85A] hover:text-[#FFD985] flex items-center gap-1 transition-colors mr-1 cursor-pointer"
+            >
+              <span>See All</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          )}
+
           <button
             onClick={() => scroll("left")}
             aria-label="Scroll left"

@@ -4,6 +4,8 @@ import mongoose, { Schema } from "mongoose";
 export interface IWatchHistory extends Document {
   user: mongoose.Types.ObjectId;
   tmdbId: number;
+  movieTitle?: string;
+  posterPath?: string;
   watchedAt: Date;
   createdAt: Date;
 }
@@ -20,6 +22,14 @@ const watchHistorySchema = new Schema<IWatchHistory>(
       type: Number,
       required: true,
       index: true,
+    },
+    movieTitle: {
+      type: String,
+      trim: true,
+    },
+    posterPath: {
+      type: String,
+      trim: true,
     },
     watchedAt: {
       type: Date,

@@ -27,6 +27,9 @@ const HistoryPage = React.lazy(() =>
 const ProfilePage = React.lazy(() =>
   import("./pages/ProfilePage").then((m) => ({ default: m.ProfilePage }))
 );
+const PremiumPage = React.lazy(() =>
+  import("./pages/PremiumPage").then((m) => ({ default: m.PremiumPage }))
+);
 const AdminPage = React.lazy(() =>
   import("./pages/AdminPage").then((m) => ({ default: m.AdminPage }))
 );
@@ -81,6 +84,7 @@ export const AppContent: React.FC = () => {
               <Route path="/my-list" element={<Navigate to="/watchlist" replace />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/premium" element={<PremiumPage />} />
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />

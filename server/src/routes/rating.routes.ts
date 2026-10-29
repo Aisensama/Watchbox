@@ -62,9 +62,29 @@ ratingRouter.put("/:tmdbId", validateBody(RatingInputSchema), async (req, res) =
     const tmdbId = parsedId.data;
     const { score, reviewNote } = req.body;
 
+    let movieTitle = req.body?.movieTitle;
+    let posterPath = req.body?.posterPath;
+    if (!movieTitle) {
+      try {
+        const details = await tmdbService.getMovieDetails(tmdbId);
+        movieTitle = details?.title || undefined;
+        posterPath = details?.posterPath || undefined;
+      } catch {
+        // ignore
+      }
+    }
+
+    const updateDoc: Record<string, unknown> = {
+      score,
+      reviewNote: reviewNote || "",
+      updatedAt: new Date(),
+    };
+    if (movieTitle) updateDoc.movieTitle = movieTitle;
+    if (posterPath) updateDoc.posterPath = posterPath;
+
     const rating = await Rating.findOneAndUpdate(
       { user: userId, tmdbId },
-      { score, reviewNote: reviewNote || "", updatedAt: new Date() },
+      updateDoc,
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
 

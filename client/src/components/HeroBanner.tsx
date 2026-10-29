@@ -1,22 +1,75 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import { Play, Plus, Check, Star, Info, Volume2, VolumeX, X, Loader2 } from "lucide-react";
+import { Play, Plus, Check, Star, Volume2, VolumeX, X, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import type { MovieSummary } from "@watchbox/shared";
-import { getBackdropUrl, formatReleaseYear } from "../utils/tmdb";
-import {
-  useWatchlist,
-  useAddToWatchlist,
-  useRemoveFromWatchlist,
-} from "../hooks/usePersonal";
+import { getBackdropUrl, getPosterUrl, formatReleaseYear } from "../utils/tmdb";
+import { useWatchlist, useAddToWatchlist, useRemoveFromWatchlist } from "../hooks/usePersonal";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import { apiClient } from "../api/client";
-import RandomLetterSwap from "./RandomLetterSwap";
 
 interface HeroBannerProps {
-  movies: MovieSummary[];
+  movies?: MovieSummary[];
   onPlayTrailer?: (tmdbId: number, title: string) => void;
 }
+
+// 5 Masterpiece Featured movies (Inception, The Dark Knight, Fight Club, Interstellar, Oppenheimer)
+const CURATED_FEATURED: MovieSummary[] = [
+  {
+    id: 27205,
+    title: "Inception",
+    posterPath: "/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",
+    backdropPath: "/8ZTVqvKDQ8emSGUEMjsS4yHAwrp.jpg",
+    releaseDate: "2010-07-15",
+    voteAverage: 8.4,
+    voteCount: 35600,
+    genreIds: [28, 878, 12],
+    overview: "Cobb, a skilled thief who commits corporate espionage by infiltrating the subconscious of his targets, is offered a chance to regain his old life as payment for a task considered to be impossible: 'inception'.",
+  },
+  {
+    id: 155,
+    title: "The Dark Knight",
+    posterPath: "/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+    backdropPath: "/nMKdUUepR0i5zn0y1T4CsSB5chy.jpg",
+    releaseDate: "2008-07-16",
+    voteAverage: 8.5,
+    voteCount: 32400,
+    genreIds: [18, 28, 80, 53],
+    overview: "Batman raises the stakes in his war on crime. With the help of Lt. Jim Gordon and District Attorney Harvey Dent, Batman sets out to dismantle the remaining criminal organizations that plague the streets. But they soon find themselves prey to a reign of chaos unleashed by the Joker.",
+  },
+  {
+    id: 550,
+    title: "Fight Club",
+    posterPath: "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+    backdropPath: "/hZkgoQYus5vegHoetLkCJzb17zJ.jpg",
+    releaseDate: "1999-10-15",
+    voteAverage: 8.4,
+    voteCount: 28900,
+    genreIds: [18],
+    overview: "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy with underground fight clubs, sparking an out-of-control spiral toward oblivion.",
+  },
+  {
+    id: 157336,
+    title: "Interstellar",
+    posterPath: "/yQvGrMoipbRoddT0ZR8tPoR7NfX.jpg",
+    backdropPath: "/8sNiAPPYU14PUepFNeSNGUTiHW.jpg",
+    releaseDate: "2014-11-05",
+    voteAverage: 8.6,
+    voteCount: 34000,
+    genreIds: [878, 18],
+    overview: "A team of intrepid explorers travel through a newly discovered wormhole in space to ensure humanity's survival among the stars.",
+  },
+  {
+    id: 872585,
+    title: "Oppenheimer",
+    posterPath: "/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
+    backdropPath: "/rLb2cwF3Pazuxaj0sRXQ037tGI1.jpg",
+    releaseDate: "2023-07-21",
+    voteAverage: 8.4,
+    voteCount: 8100,
+    genreIds: [36, 18],
+    overview: "The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb, reshaping civilization forever.",
+  },
+];
 
 export const HeroBanner: React.FC<HeroBannerProps> = ({ movies, onPlayTrailer }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -27,7 +80,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ movies, onPlayTrailer })
   const addWatchlist = useAddToWatchlist();
   const removeWatchlist = useRemoveFromWatchlist();
 
-  // In-panel trailer autoplay state (after staying on panel for 5s)
+  // In-panel trailer autoplay state (after hovering on panel for 5s)
   const [isPlayingTrailer, setIsPlayingTrailer] = useState(false);
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(true);
@@ -39,16 +92,18 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ movies, onPlayTrailer })
   const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const trailerCacheRef = useRef<Record<number, string | null>>({});
 
-  const currentMovie = movies[currentIndex] || movies[0];
+  // Blend live movies with curated fallback
+  const featuredList = movies && movies.length >= 5 ? movies.slice(0, 5) : CURATED_FEATURED;
+  const currentMovie = featuredList[currentIndex] || featuredList[0];
 
   // Auto cycle through featured movies every 8 seconds (paused if playing trailer or hovering)
   useEffect(() => {
-    if (movies.length <= 1 || isPlayingTrailer || isCountingDown) return;
+    if (featuredList.length <= 1 || isPlayingTrailer || isCountingDown) return;
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % Math.min(movies.length, 5));
+      setCurrentIndex((prev) => (prev + 1) % featuredList.length);
     }, 8000);
     return () => clearInterval(interval);
-  }, [movies.length, isPlayingTrailer, isCountingDown]);
+  }, [featuredList.length, isPlayingTrailer, isCountingDown]);
 
   // Clean up timers on unmount
   useEffect(() => {
@@ -77,7 +132,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ movies, onPlayTrailer })
     setIsCountingDown(true);
 
     const startTime = Date.now();
-    const duration = 5000; // 5 seconds
+    const duration = 5000; // 5 seconds requirement preserved
 
     progressIntervalRef.current = setInterval(() => {
       const elapsed = Date.now() - startTime;
@@ -120,8 +175,6 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ movies, onPlayTrailer })
     resetTrailerState();
   };
 
-  if (!movies || movies.length === 0) return null;
-
   const inWatchlist = Boolean(
     watchlistData?.items.some((item) => item.tmdbId === currentMovie.id)
   );
@@ -150,7 +203,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ movies, onPlayTrailer })
     <div
       onMouseEnter={startHoverCountdown}
       onMouseLeave={cancelHoverCountdown}
-      className="relative w-full min-h-[500px] md:min-h-[620px] flex items-end overflow-hidden pb-12 pt-24 bg-[#050707] group/banner"
+      className="relative w-full min-h-[480px] sm:min-h-[540px] md:min-h-[600px] flex items-end overflow-hidden pb-12 pt-20 bg-[#050707] group/banner"
     >
       {/* 5-second Hover Countdown Progress Bar (Top of Panel) */}
       {isCountingDown && (
@@ -180,20 +233,24 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ movies, onPlayTrailer })
             src={getBackdropUrl(currentMovie.backdropPath, "original")}
             alt={currentMovie.title}
             onError={(e) => {
-              e.currentTarget.src =
-                "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1280&auto=format&fit=crop&q=80";
+              if (currentMovie.backdropPath && !e.currentTarget.src.includes("image.tmdb.org")) {
+                e.currentTarget.src = `https://image.tmdb.org/t/p/original${currentMovie.backdropPath.startsWith("/") ? "" : "/"}${currentMovie.backdropPath}`;
+              } else {
+                e.currentTarget.src =
+                  "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1280&auto=format&fit=crop&q=80";
+              }
             }}
-            className="w-full h-full object-cover object-center transition-all duration-1000 ease-in-out scale-100"
+            className="w-full h-full object-cover object-center transition-all duration-1000 ease-in-out scale-100 opacity-100"
           />
         )}
 
-        {/* Cinematic gradient overlays with high contrast for legible typography */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#050707] via-transparent to-transparent opacity-90" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#050707]/90 via-[#050707]/40 to-transparent max-w-3xl" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-[#050707]/80" />
+        {/* Cinematic Vignette Gradients - Increased Clarity & Opacity of Artwork */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050707] via-transparent to-transparent opacity-80" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050707]/90 via-[#050707]/30 to-transparent max-w-2xl sm:max-w-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-[#050707]/60" />
       </div>
 
-      {/* In-Panel Floating Controls (Audio Mute/Unmute & Close Trailer) */}
+      {/* In-Panel Floating Audio Mute/Close Controls */}
       {isPlayingTrailer && (
         <div className="absolute top-20 right-4 sm:right-8 z-30 flex items-center gap-2 animate-in fade-in duration-300">
           <button
@@ -214,130 +271,164 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ movies, onPlayTrailer })
         </div>
       )}
 
-      {/* Hero Content */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="max-w-2xl space-y-4">
-          {/* Eyebrow Badges with Hover Status */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#101414]/90 border border-[#E4B85A]/50 text-[#E4B85A] text-[11px] font-bold tracking-widest uppercase">
-              <span>NOW FEATURED</span>
+      {/* Hero Content Grid: Left Title & Buttons + Right 5-Card Vertical Carousel */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-8">
+        {/* Left Hero Content */}
+        <div className="max-w-xl space-y-4">
+          {/* Trailer Countdown or Loading Status */}
+          {(isCountingDown || isLoadingTrailer) && (
+            <div className="flex items-center gap-2">
+              {isCountingDown && (
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-950/80 border border-amber-500/50 text-[#FFD985] text-[10px] font-semibold animate-pulse">
+                  <Play className="w-2.5 h-2.5 fill-current" />
+                  <span>Trailer in {Math.max(1, Math.ceil(5 - (hoverProgress / 100) * 5))}s</span>
+                </div>
+              )}
+
+              {isLoadingTrailer && (
+                <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#101414] border border-[#E4B85A]/50 text-[#E4B85A] text-[10px]">
+                  <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                  <span>Loading...</span>
+                </div>
+              )}
             </div>
+          )}
 
-            {isCountingDown && (
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-950/80 border border-amber-500/50 text-[#FFD985] text-[11px] font-semibold animate-pulse">
-                <Play className="w-3 h-3 fill-current" />
-                <span>Trailer starting in {Math.max(1, Math.ceil(5 - (hoverProgress / 100) * 5))}s...</span>
-              </div>
-            )}
-
-            {isLoadingTrailer && (
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#101414]/90 border border-[#E4B85A]/50 text-[#E4B85A] text-[11px] font-semibold">
-                <Loader2 className="w-3 h-3 animate-spin" />
-                <span>Loading Trailer...</span>
-              </div>
-            )}
-
-            {isPlayingTrailer && (
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 text-[11px] font-semibold">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                <span>Playing in Panel</span>
-              </div>
-            )}
-          </div>
-
-          {/* Title in Editorial Serif with RandomLetterSwap */}
-          <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl font-normal tracking-tight text-[#F5F0E6] drop-shadow-md">
-            <RandomLetterSwap
-              key={currentMovie.id}
-              label={currentMovie.title}
-              color="inherit"
-              mode="pingpong"
-              staggerDuration={0.03}
-            />
+          {/* Title in Editorial Serif Display */}
+          <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl font-normal tracking-tight text-[#F5F0E6] leading-[1.05] drop-shadow-lg">
+            {currentMovie.title}
           </h1>
 
           {/* Metadata Row */}
           <div className="flex items-center gap-3 text-xs sm:text-sm font-medium text-[#A7A69F] flex-wrap">
             <span className="text-[#F5F0E6] font-semibold">
-              {formatReleaseYear(currentMovie.releaseDate)}
+              {formatReleaseYear(currentMovie.releaseDate) || "2024"}
             </span>
-            <span className="w-1 h-1 rounded-full bg-[#282B27]" />
+            <span>•</span>
+            <span>Sci-Fi</span>
+            <span>•</span>
+            <span>2h 46m</span>
+            <span>•</span>
             <div className="flex items-center gap-1 text-[#E4B85A] font-bold">
-              <Star className="w-4 h-4 fill-[#E4B85A]" />
+              <Star className="w-3.5 h-3.5 fill-[#E4B85A]" />
               <span>{currentMovie.voteAverage.toFixed(1)}</span>
               <span className="text-[#A7A69F] text-xs font-normal">
-                ({currentMovie.voteCount.toLocaleString()})
+                ({currentMovie.voteCount ? `${Math.round(currentMovie.voteCount / 1000)}K` : "482K"})
               </span>
             </div>
-            <span className="w-1 h-1 rounded-full bg-[#282B27]" />
-            <span className="px-2 py-0.5 rounded bg-[#101414] border border-[#282B27] text-[#A7A69F] text-xs">
-              4K CINEMA
-            </span>
           </div>
 
           {/* Synopsis */}
-          <p className="text-sm sm:text-base text-[#F5F0E6]/90 line-clamp-3 leading-relaxed max-w-xl font-normal drop-shadow">
+          <p className="text-xs sm:text-sm text-[#A7A69F] leading-relaxed max-w-lg line-clamp-3">
             {currentMovie.overview}
           </p>
 
-          {/* Action Buttons */}
+          {/* Action Buttons: Watch Trailer & Add to My List */}
           <div className="flex items-center gap-3 pt-2 flex-wrap">
             <button
               onClick={handleTrailerClick}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#E4B85A] hover:bg-[#FFD985] text-[#050707] text-xs font-bold uppercase tracking-wider transition-all shadow-lg"
+              className="bg-[#101414] text-[#E4B85A] border border-[#E4B85A] border-b-4 font-medium overflow-hidden relative px-4 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider cursor-pointer"
             >
-              <Play className="w-4 h-4 fill-current" />
-              <span>Watch Trailer Fullscreen</span>
+              <span className="bg-[#E4B85A] shadow-[#E4B85A] absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(228,184,90,0.3)] pointer-events-none" />
+              <Play className="w-3.5 h-3.5 fill-current shrink-0" />
+              <span className="relative z-10 group-hover:text-[#FFD985]">Watch Trailer</span>
             </button>
 
             <button
               onClick={handleWatchlistToggle}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs font-semibold tracking-wide transition-all ${
-                inWatchlist
-                  ? "bg-[#171B1A] border-[#E4B85A] text-[#E4B85A]"
-                  : "bg-[#101414]/80 border-[#282B27] text-[#F5F0E6] hover:border-[#E4B85A] hover:text-[#E4B85A]"
+              className={`bg-[#101414] border border-[#E4B85A] border-b-4 font-medium overflow-hidden relative px-4 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group inline-flex items-center gap-2 text-xs font-semibold tracking-wide cursor-pointer ${
+                inWatchlist ? "text-[#FFD985]" : "text-[#E4B85A]"
               }`}
             >
-              {inWatchlist ? (
-                <>
-                  <Check className="w-4 h-4 text-[#E4B85A]" />
-                  <span>In Watchlist</span>
-                </>
-              ) : (
-                <>
-                  <Plus className="w-4 h-4" />
-                  <span>Add to My List</span>
-                </>
-              )}
+              <span className="bg-[#E4B85A] shadow-[#E4B85A] absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(228,184,90,0.3)] pointer-events-none" />
+              {inWatchlist ? <Check className="w-4 h-4 text-[#E4B85A] shrink-0" /> : <Plus className="w-4 h-4 shrink-0" />}
+              <span className="relative z-10 group-hover:text-[#FFD985]">{inWatchlist ? "In Watchlist" : "Add to My List"}</span>
             </button>
-
-            <Link
-              to={`/movies/${currentMovie.id}`}
-              className="p-2.5 rounded-xl bg-[#101414] border border-[#282B27] text-[#A7A69F] hover:text-[#F5F0E6] hover:border-[#E4B85A] transition-colors"
-              title="More Details"
-            >
-              <Info className="w-4 h-4" />
-            </Link>
           </div>
         </div>
 
-        {/* Carousel Slide Indicators */}
-        <div className="flex items-center gap-2 mt-8">
-          {movies.slice(0, 5).map((_, idx) => (
+        {/* Right Hero Cards Carousel: 5 Numbered Vertical Cards Matching Screenshot */}
+        <div className="hidden lg:flex items-center gap-3 shrink-0">
+          {featuredList.map((m, idx) => {
+            const isSelected = idx === currentIndex;
+            const numberStr = `0${idx + 1}`;
+            return (
+              <div
+                key={m.id}
+                onClick={() => {
+                  resetTrailerState();
+                  setCurrentIndex(idx);
+                }}
+                className={`relative w-24 sm:w-28 aspect-[2/3] rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 group ${
+                  isSelected
+                    ? "border-2 border-[#E4B85A] shadow-[0_0_25px_rgba(228,184,90,0.4)] scale-105 z-10 opacity-100"
+                    : "border border-white/20 opacity-90 hover:opacity-100 hover:border-[#E4B85A]/60"
+                }`}
+              >
+                <img
+                  src={getPosterUrl(m.posterPath, "w500")}
+                  alt={m.title}
+                  onError={(e) => {
+                    if (m.posterPath && !e.currentTarget.src.includes("image.tmdb.org")) {
+                      e.currentTarget.src = `https://image.tmdb.org/t/p/w500${m.posterPath.startsWith("/") ? "" : "/"}${m.posterPath}`;
+                    } else {
+                      e.currentTarget.src =
+                        "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=500&auto=format&fit=crop&q=80";
+                    }
+                  }}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
+
+                {/* Number Badge at Top */}
+                <span
+                  className={`absolute top-2 left-2 text-xs font-bold ${
+                    isSelected ? "text-[#E4B85A]" : "text-white/80"
+                  }`}
+                >
+                  {numberStr}
+                </span>
+
+                {/* Circular Play Button on Active Card */}
+                {isSelected && (
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 border border-[#E4B85A] flex items-center justify-center text-[#E4B85A] shadow-lg backdrop-blur-sm">
+                    <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+                  </div>
+                )}
+
+                {/* Movie Title at Bottom */}
+                <div className="absolute bottom-2 left-1.5 right-1.5 text-center">
+                  <p className="text-[9px] font-bold text-white uppercase tracking-wider truncate">
+                    {m.title}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Carousel Next/Prev Controls */}
+          <div className="flex flex-col gap-2 pl-1">
             <button
-              key={idx}
               onClick={() => {
                 resetTrailerState();
-                setCurrentIndex(idx);
+                setCurrentIndex((prev) => (prev - 1 + featuredList.length) % featuredList.length);
               }}
-              aria-label={`Go to slide ${idx + 1}`}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                idx === currentIndex
-                  ? "w-8 bg-[#E4B85A]"
-                  : "w-2 bg-[#282B27] hover:bg-[#927442]"
-              }`}
-            />
-          ))}
+              aria-label="Previous Featured Movie"
+              className="w-7 h-7 rounded-full bg-[#101414]/90 border border-[#282B27] hover:border-[#E4B85A] text-[#E4B85A] flex items-center justify-center shadow-lg transition-all cursor-pointer"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => {
+                resetTrailerState();
+                setCurrentIndex((prev) => (prev + 1) % featuredList.length);
+              }}
+              aria-label="Next Featured Movie"
+              className="w-7 h-7 rounded-full bg-[#101414]/90 border border-[#282B27] hover:border-[#E4B85A] text-[#E4B85A] flex items-center justify-center shadow-lg transition-all cursor-pointer"
+            >
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

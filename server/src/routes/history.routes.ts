@@ -61,9 +61,24 @@ historyRouter.post("/:tmdbId", async (req, res) => {
     const tmdbId = parsedId.data;
     const watchedAt = req.body?.watchedAt ? new Date(req.body.watchedAt) : new Date();
 
+    // Look up movie details for rich database storage
+    let movieTitle = req.body?.movieTitle;
+    let posterPath = req.body?.posterPath;
+    if (!movieTitle) {
+      try {
+        const details = await tmdbService.getMovieDetails(tmdbId);
+        movieTitle = details?.title || undefined;
+        posterPath = details?.posterPath || undefined;
+      } catch {
+        // ignore
+      }
+    }
+
     const existing = await WatchHistory.findOne({ user: userId, tmdbId });
     if (existing) {
       existing.watchedAt = watchedAt;
+      if (movieTitle && !existing.movieTitle) existing.movieTitle = movieTitle;
+      if (posterPath && !existing.posterPath) existing.posterPath = posterPath;
       await existing.save();
       res.status(200).json({
         message: "Watch date updated",
@@ -71,6 +86,8 @@ historyRouter.post("/:tmdbId", async (req, res) => {
           id: existing._id.toString(),
           userId: existing.user.toString(),
           tmdbId: existing.tmdbId,
+          movieTitle: existing.movieTitle,
+          posterPath: existing.posterPath,
           watchedAt: existing.watchedAt.toISOString(),
           createdAt: existing.createdAt.toISOString(),
         },
@@ -81,6 +98,8 @@ historyRouter.post("/:tmdbId", async (req, res) => {
     const item = new WatchHistory({
       user: userId,
       tmdbId,
+      movieTitle,
+      posterPath,
       watchedAt,
     });
 
@@ -92,6 +111,8 @@ historyRouter.post("/:tmdbId", async (req, res) => {
         id: item._id.toString(),
         userId: item.user.toString(),
         tmdbId: item.tmdbId,
+        movieTitle: item.movieTitle,
+        posterPath: item.posterPath,
         watchedAt: item.watchedAt.toISOString(),
         createdAt: item.createdAt.toISOString(),
       },

@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Heart } from "lucide-react";
 import RandomLetterSwap from "./RandomLetterSwap";
 
 export const Footer: React.FC = () => {
@@ -94,11 +93,6 @@ export const Footer: React.FC = () => {
       {/* Bottom Bar */}
       <div className="max-w-7xl mx-auto pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#A7A69F]">
         <p>© {new Date().getFullYear()} WatchBox • Luxury Cinema & Discovery.</p>
-        <div className="flex items-center gap-1.5 text-[11px]">
-          <span>Crafted for film lovers with</span>
-          <Heart className="w-3.5 h-3.5 text-[#E4B85A] fill-[#E4B85A]" />
-          <span>React, Express & MongoDB</span>
-        </div>
       </div>
     </footer>
   );

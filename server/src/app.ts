@@ -93,6 +93,7 @@ if (mongoUri && !mongoUri.includes("<") && !mongoUri.includes("your_password")) 
   try {
     sessionStore = MongoStore.create({
       mongoUrl: mongoUri,
+      dbName: "watchbox",
       touchAfter: 24 * 3600, // lazy session update once per 24 hours
       collectionName: "sessions",
     });

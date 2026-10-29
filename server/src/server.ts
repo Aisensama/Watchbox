@@ -4,7 +4,7 @@ try {
   dns.setDefaultResultOrder("ipv4first");
   const servers = dns.getServers();
   if (servers.length === 0 || servers.every((s) => s === "127.0.0.1" || s === "::1")) {
-    dns.setServers(["8.8.8.8", "1.1.1.1"]);
+    dns.setServers(["172.16.2.1", "192.168.0.1", "192.168.1.1", "1.1.1.1", "8.8.8.8"]);
   }
 } catch {
   // Ignore in environments where not supported
